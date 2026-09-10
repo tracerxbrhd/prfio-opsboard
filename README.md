@@ -168,4 +168,8 @@ OpsBoard is intentionally a **single shared workspace for a small delivery team*
 
 The project does not present estimated effort as recorded working time, and its analytics are operational views of the current database rather than an immutable reporting warehouse.
 
-Third-party software, typography and asset provenance are recorded in [CREDITS.md](CREDITS.md). The project source is MIT licensed.
+## Credits and license
+
+Third-party software, typography and asset provenance are recorded in [CREDITS.md](CREDITS.md).
+
+This repository is source-available for portfolio review and evaluation only. The original code and other original materials are **not open source** and may not be reused, redistributed, incorporated into other projects, or commercially exploited without prior written permission. See the [Portfolio Source License](LICENSE) for the complete terms. Third-party components remain subject to their respective licenses.
