@@ -1,0 +1,10 @@
+# Use behind an HTTPS ingress on the same host, forwarding to 127.0.0.1:8081.
+services:
+  backend:
+    environment:
+      DJANGO_DEBUG: "false"
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set a unique production secret}
+      SEED_DEMO: "false"
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:?Set the public hostname and localhost for health checks}
+      CSRF_TRUSTED_ORIGINS: ${CSRF_TRUSTED_ORIGINS:?Set the public HTTPS origin}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?Set the public HTTPS origin}

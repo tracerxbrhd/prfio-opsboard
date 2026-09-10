@@ -1,0 +1,13 @@
+.git
+.venv
+.env
+**/.local-secret
+**/*.sqlite3
+**/__pycache__
+**/node_modules
+**/dist
+**/test-results
+**/playwright-report
+docs/screenshots
+.ruff_cache
+*.log
