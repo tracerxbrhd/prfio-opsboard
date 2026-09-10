@@ -76,6 +76,8 @@ npm run dev
 
 Open [127.0.0.1:5103](http://127.0.0.1:5103). Vite proxies `/api`, `/admin`, and `/static` to port 8101. Use the same hostname consistently so session and CSRF cookies remain same-origin.
 
+OpsBoard uses `opsboard_sessionid` and `opsboard_csrftoken` cookies so it can run beside other local portfolio apps without overwriting their authentication cookies. Browser cookies share a hostname across ports; the application-specific names keep these values separate. Existing users sign in once again after updating from the default cookie names.
+
 ## Demo accounts
 
 The empty-workspace seed creates six teammates, six projects, and 45 tasks, with dates relative to the seed run.
@@ -132,7 +134,7 @@ Run migrations as a dedicated release step if scaling beyond the supplied single
 
 ## Verification
 
-The recorded local release checks passed **23 backend tests and 8 browser tests**, including role boundaries, real CRUD, technical administration, and four responsive widths. Six core screens produced no automated axe violations. See [QA evidence](docs/QA.md) for exact commands, 41 screenshots, and verification limits.
+The recorded local release checks passed **24 backend tests**, an **8-test browser release suite**, and a focused browser regression for cookie coexistence. Coverage includes role boundaries, real CRUD, technical administration, and four responsive widths. Six core screens produced no automated axe violations. See [QA evidence](docs/QA.md) for exact commands, 41 screenshots, and verification limits.
 
 With the Python environment activated:
 

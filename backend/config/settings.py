@@ -78,6 +78,8 @@ CSRF_TRUSTED_ORIGINS = os.getenv(
     "CSRF_TRUSTED_ORIGINS",
     "http://localhost:5103,http://127.0.0.1:5103,http://localhost:8081",
 ).split(",")
+SESSION_COOKIE_NAME = "opsboard_sessionid"
+CSRF_COOKIE_NAME = "opsboard_csrftoken"
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = not DEBUG

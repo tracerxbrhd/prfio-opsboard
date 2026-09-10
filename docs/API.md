@@ -2,6 +2,8 @@
 
 Base path: `/api/`. Requests and responses use JSON. Authenticate with a session cookie; obtain a CSRF token before unsafe requests. All workspace read endpoints require a session. Missing session permissions return HTTP 403, as expected with DRF session authentication.
 
+Session and CSRF cookies are named `opsboard_sessionid` and `opsboard_csrftoken`. These distinct names let local apps coexist on the same hostname across ports. The frontend uses the token returned by `/auth/csrf/` rather than reading a fixed cookie name.
+
 ## Session
 
 | Method | Path | Behavior |

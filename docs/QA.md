@@ -6,7 +6,7 @@ Verified on 8 September 2026 on Windows with Python 3.12.14, Node.js 24.19.0, np
 
 | Check | Result |
 | --- | --- |
-| `python backend/manage.py test operations` | 23 tests passed |
+| `python backend/manage.py test operations` | 24 tests passed after the cookie coexistence fix |
 | `ruff check backend` | Passed |
 | `ruff format --check backend` | 17 files already formatted |
 | `python backend/manage.py check` | No issues |
@@ -15,6 +15,7 @@ Verified on 8 September 2026 on Windows with Python 3.12.14, Node.js 24.19.0, np
 | `npm run format:check` | Passed |
 | `npm run build` | Passed; 34 modules transformed |
 | `npm run test:e2e` | 8 tests passed in 1.0 minute, including technical administration and the four-width screenshot matrix |
+| `npm run test:e2e -- --grep 'session cookies coexist'` | 1 test passed in 5.6 seconds after the cookie coexistence fix; retained screenshots were not regenerated |
 | `docker compose config --quiet` | Passed with `.env` copied from `.env.example` |
 | `docker compose -f compose.yaml -f compose.production.yaml config --quiet` | Passed with example production hostname/origin and a temporary validation-only secret supplied in the process environment |
 
@@ -22,7 +23,7 @@ The production build generated a 286.28 kB JavaScript entry (88.23 kB gzip) and 
 
 ## API coverage
 
-The 23 Django tests cover session login/logout/current user, anonymous route denial, CSRF token rotation and enforcement, failed-login throttling, project and task CRUD, validation, archive/restore and archived-task immutability, role restrictions, self-role and superuser protection, active-account checks, project progress, completion timestamps, database-derived analytics and workload, activity authorship, public database health, query-count efficiency, repeat-safe seeding, password hashing, and refusal to seed when debug is off. Seed output is checked to exclude the demonstration password.
+The 24 Django tests cover session login/logout/current user, anonymous route denial, CSRF token rotation and enforcement, failed-login throttling, project and task CRUD, validation, archive/restore and archived-task immutability, role restrictions, self-role and superuser protection, active-account checks, project progress, completion timestamps, database-derived analytics and workload, activity authorship, public database health, query-count efficiency, repeat-safe seeding, password hashing, and refusal to seed when debug is off. Seed output is checked to exclude the demonstration password. The cookie regression confirms the `opsboard_sessionid` / `opsboard_csrftoken` names and preservation of another app's default Django cookies through login and logout.
 
 Expected 400, 403, 404, and 429 responses in test output are deliberate rejection tests.
 
@@ -40,6 +41,8 @@ The suite in [workspace.spec.js](../frontend/tests/workspace.spec.js) runs seria
 8. Automated WCAG 2 A/AA and WCAG 2.1 AA axe checks on login, dashboard, projects, tasks, team, and analytics: **zero detected violations across six screens**. Saved violation arrays are [login](axe-login.json), [dashboard](axe-dashboard.json), [projects](axe-projects.json), [tasks](axe-tasks.json), [team](axe-team.json), and [analytics](axe-analytics.json).
 
 Page-error listeners reported no uncaught JavaScript errors during the login/responsive screen checks. Automated accessibility checks are scoped to those six default desktop states; they are not a claim of full accessibility conformance or a screen-reader audit. Escape dismissal and keyboard chart inspection are additionally exercised by interaction tests.
+
+A ninth browser test was added for the cookie coexistence fix and passed as a focused rerun. It preloads another local app's default Django cookies, signs into OpsBoard, verifies its named HttpOnly session cookie and CSRF cookie, reloads the protected workspace, signs out, checks protected-route denial, and confirms the other app's cookies remain unchanged. The original eight-test screenshot/accessibility suite was not rerun for this server configuration change.
 
 ## Screenshot evidence
 

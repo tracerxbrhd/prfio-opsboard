@@ -1,6 +1,7 @@
 from datetime import timedelta
 from io import StringIO
 
+from django.conf import settings
 from django.core.cache import cache
 from django.core.management import call_command
 from django.core.management.base import CommandError
@@ -96,7 +97,7 @@ class WorkspaceAPITests(TestCase):
         self.assertEqual(response.data["role"], "admin")
         self.assertNotIn("password", response.data)
         self.assertEqual(self.client.get("/api/auth/me/").data["id"], self.admin.id)
-        self.assertTrue(self.client.cookies["sessionid"]["httponly"])
+        self.assertTrue(self.client.cookies[settings.SESSION_COOKIE_NAME]["httponly"])
         self.assertEqual(self.client.post("/api/auth/logout/").status_code, 204)
         self.assertEqual(self.client.get("/api/auth/me/").status_code, 403)
 
@@ -122,6 +123,29 @@ class WorkspaceAPITests(TestCase):
             ).status_code,
             400,
         )
+
+    def test_workspace_cookies_preserve_other_local_app_sessions(self):
+        self.assertEqual(settings.SESSION_COOKIE_NAME, "opsboard_sessionid")
+        self.assertEqual(settings.CSRF_COOKIE_NAME, "opsboard_csrftoken")
+        client = APIClient(enforce_csrf_checks=True)
+        client.cookies["sessionid"] = "another-app-session"
+        client.cookies["csrftoken"] = "a" * 32
+        csrf = client.get("/api/auth/csrf/")
+        self.assertIn(settings.CSRF_COOKIE_NAME, csrf.cookies)
+        self.assertEqual(
+            client.post(
+                "/api/auth/login/",
+                {"email": self.admin.email, "password": "test-password"},
+                HTTP_X_CSRFTOKEN=csrf.data["csrfToken"],
+            ).status_code,
+            200,
+        )
+        self.assertEqual(client.get("/api/auth/me/").data["id"], self.admin.id)
+        token = client.get("/api/auth/csrf/").data["csrfToken"]
+        self.assertEqual(client.post("/api/auth/logout/", HTTP_X_CSRFTOKEN=token).status_code, 204)
+        self.assertEqual(client.get("/api/auth/me/").status_code, 403)
+        self.assertEqual(client.cookies["sessionid"].value, "another-app-session")
+        self.assertEqual(client.cookies["csrftoken"].value, "a" * 32)
 
     def test_login_throttles_repeated_attempts(self):
         for _ in range(10):

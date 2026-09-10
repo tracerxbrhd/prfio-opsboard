@@ -310,3 +310,28 @@ test('WCAG AA automated accessibility on login and core workspace screens', asyn
     expect.soft(result.violations).toEqual([]);
   }
 });
+
+test('session cookies coexist with other local apps through login and logout', async ({
+  page,
+  context,
+  baseURL,
+}) => {
+  await context.addCookies([
+    { name: 'sessionid', value: 'another-app-session', url: baseURL },
+    { name: 'csrftoken', value: 'a'.repeat(32), url: baseURL },
+  ]);
+  await login(page);
+  let cookies = await context.cookies(baseURL);
+  expect(cookies.find((cookie) => cookie.name === 'opsboard_sessionid').httpOnly).toBe(true);
+  expect(cookies.find((cookie) => cookie.name === 'opsboard_csrftoken').value).toBeTruthy();
+  await page.reload();
+  await expect(page.getByRole('heading', { name: 'Good to see you,' })).toBeVisible();
+  await page.getByRole('button', { name: 'Sign out' }).click();
+  await expect(page.getByRole('heading', { name: 'Welcome back.' })).toBeVisible();
+  await page.goto('/projects');
+  await expect(page.getByRole('heading', { name: 'Welcome back.' })).toBeVisible();
+  cookies = await context.cookies(baseURL);
+  expect(cookies.find((cookie) => cookie.name === 'sessionid').value).toBe('another-app-session');
+  expect(cookies.find((cookie) => cookie.name === 'csrftoken').value).toBe('a'.repeat(32));
+  expect(cookies.find((cookie) => cookie.name === 'opsboard_sessionid')).toBeUndefined();
+});
