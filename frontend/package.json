@@ -1,0 +1,34 @@
+{
+  "name": "opsboard-web",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5103",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5103",
+    "lint": "eslint .",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.0",
+    "@fontsource/ibm-plex-sans": "^5.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@eslint/js": "^9.39.0",
+    "@playwright/test": "^1.58.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "eslint": "^9.39.0",
+    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-refresh": "^0.5.0",
+    "globals": "^17.0.0",
+    "prettier": "^3.8.0",
+    "vite": "^8.0.0"
+  }
+}
